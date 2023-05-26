@@ -1,4 +1,4 @@
-from lingo import Lingo
+from lingo1 import Lingo
 
 test = Lingo("groot")
 
