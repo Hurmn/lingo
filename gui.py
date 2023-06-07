@@ -6,11 +6,25 @@ lingo = Lingo("hoger")
 invoervelden = {}
 
 def validate(event):
-    print("beurt: " + lingo.woord)
-    print("woord: "+ str(lingo.beurt))
+    print("woord: " + lingo.woord)
+    print("beurt: "+ str(lingo.beurt))
     print("ingevoerd: " + invoervelden[lingo.beurt-1].get())
     invoer = invoervelden[lingo.beurt-1].get()
-    lingo.validate_input(invoer)
+    status = lingo.validate_input(invoer)
+    statusLabel["text"] = status
+
+    invoervelden[lingo.beurt-2].insert("end", " > " + status)
+
+    if status == "Voer een 5 letter woord in!":
+        statusLabel["fg"] = "red"
+    elif status == "Je hebt het goed geraden!":
+        statusLabel["fg"] = "green"
+    else:
+        statusLabel["fg"] = "#3366cc"
+    beurtLabel["text"] = str(lingo.beurt) + "/5"
+
+    
+
 
 
 window = tk.Tk()
@@ -25,7 +39,7 @@ welkomLabel.pack()
 uitlegLabel = tk.Label(window, text="Raad het 5 letter woord in 5 beurten", font=("Arial", 10, "italic"))
 uitlegLabel.pack()
 
-statusLabel = tk.Label(window, text="Succes", font=("Arial", 14, "bold"), fg="green")
+statusLabel = tk.Label(window, text="Succes!", font=("Arial", 14, "bold"), fg="green")
 statusLabel.pack()
 
 beurtLabel = tk.Label(window, text="1/5", font=("Arial", 18, "bold"))

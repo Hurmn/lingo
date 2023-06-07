@@ -4,12 +4,11 @@ class Lingo:
         self.beurt = 1
 
     def validate_input(self, invoer):
-        lengte = False
         #controleer dat input 5 letters is
         if len(invoer) != 5:
             print("Voer een 5 letter woord in")
-            exit()
-        self.beurt += 1
+            return("Voer een 5 letter woord in!")
+        self.beurt = self.beurt + 1
 
         #print de eerste letter van het goede woord
         print([*self.woord][0].upper() + " _ _ _ _")
@@ -37,5 +36,7 @@ class Lingo:
         #als alles is ingevuld en alles hoofdletter is
         if len(out) == 5 and goed == True:
             print("gefeliciteerd je hebt het goed geraden")
+            return("Je hebt het goed geraden!")
         else:
-            print(out)   
+            print(out)
+            return(out)   
