@@ -1,6 +1,8 @@
+import sqlite3
+
 class Lingo:
-    def __init__(self, woord):
-        self.woord = woord
+    def __init__(self):
+        self.woord = ""
         self.beurt = 1
 
     def validate_input(self, invoer):
@@ -39,4 +41,12 @@ class Lingo:
             return("Je hebt het goed geraden!")
         else:
             print(out)
-            return(out)   
+            return(out)
+        
+    def set_woord(self):
+        connection = sqlite3.connect("lingo.sqlite3")
+        cursor = connection.execute("SELECT * FROM vijfletters ORDER BY RANDOM() ;")
+        for row in cursor:
+            woord = row[0]
+        connection.close()
+        return str(woord)

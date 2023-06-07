@@ -1,7 +1,10 @@
 import tkinter as tk
 from lingo import Lingo
 
-lingo = Lingo("hoger")
+
+lingo = Lingo()
+
+lingo.woord = lingo.set_woord()
 
 invoervelden = {}
 
@@ -13,7 +16,8 @@ def validate(event):
     status = lingo.validate_input(invoer)
     statusLabel["text"] = status
 
-    invoervelden[lingo.beurt-2].insert("end", " > " + status)
+    if status != "Voer een 5 letter woord in!":
+        invoervelden[lingo.beurt-2].insert("end", " > " + status)
 
     if status == "Voer een 5 letter woord in!":
         statusLabel["fg"] = "red"
@@ -21,12 +25,14 @@ def validate(event):
         statusLabel["fg"] = "green"
     else:
         statusLabel["fg"] = "#3366cc"
-    beurtLabel["text"] = str(lingo.beurt) + "/5"
+
+    if lingo.beurt < 6:
+        beurtLabel["text"] = str(lingo.beurt) + "/5"
+    else:
+        statusLabel["fg"] = "red"
+        statusLabel["text"] = "Het juiste woord was " + lingo.woord
 
     
-
-
-
 window = tk.Tk()
 window.title("Lingo")
 window.geometry("300x400")
