@@ -1,5 +1,10 @@
 import tkinter as tk
 from lingo import Lingo
+from timer import Timer
+from highscores import HighScores
+from threading import Thread
+from threading import Event
+import time
 
 #aanmaken van het object
 lingo = Lingo()
@@ -8,6 +13,17 @@ lingo = Lingo()
 lingo.woord = lingo.set_woord()
 
 invoervelden = {}
+
+#aanmaken timer en op 0 zetten
+timer = Timer()
+timer.reset()
+
+def run_timer(sluit):
+    while True:
+        timerLabel["text"] = str(timer.get_elapsed_s())
+        time.sleep(1)
+        if sluit.is_set():
+            break
 
 def naam(event):
     lingo.naam = naamVeld.get()
@@ -29,9 +45,14 @@ def handle_clear(event):
     lingo.beurt = 1
     lingo.score = 0
     lingo.naam = ""
+    timer.reset()
     
 def handle_sluit(event):
+    sluit.set()
+    thread.join()
     window.quit()    
+
+
 
 def validate(event):
     #pak de naam uit naamveld
@@ -71,9 +92,17 @@ def validate(event):
         gameFrame.pack_forget()
         #laat status zien
         eindLabel["text"] = status
+        #laat verstreken tijd zien
+        tijd = timer.get_elapsed_s()
+        print(tijd)
+        tijdLabel["text"] = timer.get_elapsed_time()
+
         #laat score zien
         if status == "Je hebt het goed geraden!":
-            resultaatLabel["text"] = "Uw score is "+ str(lingo.beurt-1)       
+            resultaatLabel["text"] = "Uw score is "+ str(lingo.beurt-1)
+            score = HighScores()
+            behaaldeScore = (lingo.beurt-1) * tijd
+            score.add_entry(lingo.naam, str(behaaldeScore))      
 
     
 window = tk.Tk()
@@ -85,7 +114,6 @@ gameFrame = tk.Frame()
 gameFrame.pack()
 
 resultFrame = tk.Frame()
-
 
 welkomLabel = tk.Label(gameFrame, text="Welkom bij LINGO", font=("Arial", 18, "bold"))
 welkomLabel.pack()
@@ -106,11 +134,18 @@ statusLabel.pack()
 beurtLabel = tk.Label(gameFrame, text="1/5", font=("Arial", 18, "bold"))
 beurtLabel.pack()
 
+timerLabel = tk.Label(gameFrame, text="00", font=("Arial", 18, "italic"))
+timerLabel.pack()
+
 resultaatLabel = tk.Label(resultFrame, text="" , font=("Arial", 20, "bold"), fg="green")
 resultaatLabel.pack()
 
 eindLabel = tk.Label(resultFrame, text="", font=("Arial", 14, "bold"), fg="green")
 eindLabel.pack()
+
+tijdLabel = tk.Label(resultFrame, text="", font=("Arial", 14, "bold"), fg="green")
+tijdLabel.pack()
+
 
 clear = tk.Button(resultFrame, text="clear")
 clear.pack()
@@ -126,5 +161,12 @@ for veld in range(5):
     invoerVeld.pack()
     invoervelden[veld] = invoerVeld
     invoerVeld.bind("<Return>", validate)
+
+sluit = Event()
+
+#aanmaken thread om timer gelijk te runnen met programma
+thread = Thread(target=run_timer, args=(sluit,))
+thread.start()
+
 
 window.mainloop()

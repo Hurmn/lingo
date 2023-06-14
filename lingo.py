@@ -41,9 +41,6 @@ class Lingo:
         #als alles is ingevuld en alles hoofdletter is
         if len(out) == 5 and goed == True:
             print("gefeliciteerd je hebt het goed geraden")
-            score = HighScores()
-            self.score = self.beurt-1
-            score.add_entry(self.naam, str(self.score)) 
             return("Je hebt het goed geraden!")
             
         else:
