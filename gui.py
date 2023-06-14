@@ -25,7 +25,7 @@ def handle_clear(event):
         invoervelden[veld].delete(0, "end")
     beurtLabel["text"] = "1/5"
     #zet het object weer op 0
-    lingo.woord = lingo.set_woord
+    lingo.woord = lingo.set_woord()
     lingo.beurt = 1
     lingo.score = 0
     lingo.naam = ""
@@ -34,6 +34,10 @@ def handle_sluit(event):
     window.quit()    
 
 def validate(event):
+    #pak de naam uit naamveld
+    lingo.naam = naamVeld.get()
+    print(lingo.naam)
+    #print debug
     print("woord: " + lingo.woord)
     print("beurt: "+ str(lingo.beurt))
     print("ingevoerd: " + invoervelden[lingo.beurt-1].get())
@@ -66,20 +70,10 @@ def validate(event):
         resultFrame.pack()
         gameFrame.pack_forget()
         #laat status zien
-        eindLabel = tk.Label(resultFrame, text=status, font=("Arial", 14, "bold"), fg="green")
-        eindLabel.pack()
+        eindLabel["text"] = status
         #laat score zien
         if status == "Je hebt het goed geraden!":
-            resultaatLabel = tk.Label(resultFrame, text="Uw score is "+ str(lingo.beurt-1) , font=("Arial", 20, "bold"), fg="green")
-            resultaatLabel.pack()
-
-        clear = tk.Button(resultFrame, text="clear")
-        clear.pack()
-        clear.bind("<Button-1>", handle_clear)
-
-        sluit = tk.Button(resultFrame, text="Exit")
-        sluit.pack()
-        sluit.bind("<Button-1>", handle_sluit)       
+            resultaatLabel["text"] = "Uw score is "+ str(lingo.beurt-1)       
 
     
 window = tk.Tk()
@@ -111,6 +105,20 @@ statusLabel.pack()
 
 beurtLabel = tk.Label(gameFrame, text="1/5", font=("Arial", 18, "bold"))
 beurtLabel.pack()
+
+resultaatLabel = tk.Label(resultFrame, text="" , font=("Arial", 20, "bold"), fg="green")
+resultaatLabel.pack()
+
+eindLabel = tk.Label(resultFrame, text="", font=("Arial", 14, "bold"), fg="green")
+eindLabel.pack()
+
+clear = tk.Button(resultFrame, text="clear")
+clear.pack()
+clear.bind("<Button-1>", handle_clear)
+
+sluit = tk.Button(resultFrame, text="Exit")
+sluit.pack()
+sluit.bind("<Button-1>", handle_sluit)
 
 #invoervelden aanmaken
 for veld in range(5):
