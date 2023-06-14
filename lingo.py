@@ -1,9 +1,12 @@
 import sqlite3
+from highscores import HighScores
 
 class Lingo:
     def __init__(self):
         self.woord = ""
         self.beurt = 1
+        self.naam = ""
+        self.score = 0
 
     def validate_input(self, invoer):
         #controleer dat input 5 letters is
@@ -38,7 +41,11 @@ class Lingo:
         #als alles is ingevuld en alles hoofdletter is
         if len(out) == 5 and goed == True:
             print("gefeliciteerd je hebt het goed geraden")
+            score = HighScores()
+            self.score = self.beurt-1
+            score.add_entry(self.naam, str(self.score)) 
             return("Je hebt het goed geraden!")
+            
         else:
             print(out)
             return(out)
