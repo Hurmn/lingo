@@ -5,9 +5,13 @@ from highscores import HighScores
 from threading import Thread
 from threading import Event
 import time
+import sqlite3
 
 #aanmaken van het object
 lingo = Lingo()
+
+#aanmaken highscores object
+score = HighScores()
 
 #bepaal het woord
 lingo.woord = lingo.set_woord()
@@ -52,7 +56,10 @@ def handle_sluit(event):
     thread.join()
     window.quit()    
 
-
+def sluit():
+    sluit.set()
+    thread.join()
+    window.quit()
 
 def validate(event):
     #pak de naam uit naamveld
@@ -100,18 +107,35 @@ def validate(event):
         #laat score zien
         if status == "Je hebt het goed geraden!":
             resultaatLabel["text"] = "Uw score is "+ str(lingo.beurt-1)
-            score = HighScores()
             behaaldeScore = (lingo.beurt-1) * tijd
             score.add_entry(lingo.naam, str(behaaldeScore))      
 
-    
+def show_game():
+    highscoreFrame.pack_forget()
+    gameFrame.pack()
+
+def show_highscores():
+    highscoreFrame.pack()
+    gameFrame.pack_forget()
+
 window = tk.Tk()
+menubar = tk.Menu(window)
 window.title("Lingo")
 window.geometry("300x400")
 window.resizable(False, False)
+window.config(menu=menubar)
+
+mainmenu = tk.Menu(menubar)
+mainmenu.add_command(label="lingo", command=show_game)
+mainmenu.add_command(label="highscores", command=show_highscores)
+mainmenu.add_separator
+mainmenu.add_command(label="Exit", command=sluit)
+menubar.add_cascade(label="Tool", menu=mainmenu)
 
 gameFrame = tk.Frame()
 gameFrame.pack()
+
+highscoreFrame = tk.Frame()
 
 resultFrame = tk.Frame()
 
@@ -146,6 +170,9 @@ eindLabel.pack()
 tijdLabel = tk.Label(resultFrame, text="", font=("Arial", 14, "bold"), fg="green")
 tijdLabel.pack()
 
+highscoresLabel = tk.Label(highscoreFrame, text="Top 20 highscores", font=("Arial", 14, "bold"))
+tijdLabel.pack()
+
 
 clear = tk.Button(resultFrame, text="clear")
 clear.pack()
@@ -162,6 +189,35 @@ for veld in range(5):
     invoervelden[veld] = invoerVeld
     invoerVeld.bind("<Return>", validate)
 
+
+#maken van highscores tabel
+connection = sqlite3.connect('lingo.sqlite3')
+cursor = connection.execute("SELECT * FROM highscores ORDER BY score ASC LIMIT 0,10; ")
+
+#maken table head
+IDen = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, "bold"))
+IDen.grid(row = 0, column = 0)
+IDen.insert("end", "ID")
+
+naamEn = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, "bold"))
+naamEn.grid(row = 0, column= 1)
+naamEn.insert("end", "Naam")
+
+scoreEn = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, "bold") )
+scoreEn.grid(row=0, column=2)
+scoreEn.insert("end", "Score")
+
+i=1
+for row in cursor: 
+    for j in range(len(row)):
+        e = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, )) 
+        e.grid(row=i, column=j) 
+        e.insert("end", row[j])
+    i+=1
+            
+connection.close()
+
+#aanmaken event voor exit knop
 sluit = Event()
 
 #aanmaken thread om timer gelijk te runnen met programma
