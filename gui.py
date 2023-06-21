@@ -108,7 +108,7 @@ def validate(event):
 
         #laat score zien
         if status == "Je hebt het goed geraden!":
-            resultaatLabel["text"] = "Uw score is "+ str(lingo.beurt-1)
+            resultaatLabel["text"] = "Uw score is "+ str(behaaldeScore)
             behaaldeScore = (lingo.beurt-1) * tijd
             score.add_entry(lingo.naam, str(behaaldeScore))      
 
@@ -232,6 +232,5 @@ sluit = Event()
 #aanmaken thread om timer gelijk te runnen met programma
 thread = Thread(target=run_timer, args=(sluit,))
 thread.start()
-
 
 window.mainloop()
