@@ -22,6 +22,7 @@ invoervelden = {}
 timer = Timer()
 timer.reset()
 
+#functie om timer aan te zetten
 def run_timer(sluit):
     while True:
         timerLabel["text"] = str(timer.get_elapsed_s())
@@ -33,6 +34,7 @@ def naam(event):
     lingo.naam = naamVeld.get()
     print(lingo.naam)
 
+#functie om te clearen
 def handle_clear(event):
     #pack gameframe weer en vergeet resultaat
     gameFrame.pack()
@@ -125,6 +127,7 @@ window.geometry("300x400")
 window.resizable(False, False)
 window.config(menu=menubar)
 
+#menu
 mainmenu = tk.Menu(menubar)
 mainmenu.add_command(label="lingo", command=show_game)
 mainmenu.add_command(label="highscores", command=show_highscores)
@@ -132,11 +135,14 @@ mainmenu.add_separator
 mainmenu.add_command(label="Exit", command=sluit)
 menubar.add_cascade(label="Tool", menu=mainmenu)
 
+#frame waar de game zich afspeelt
 gameFrame = tk.Frame()
 gameFrame.pack()
 
+#frame waar je de highscores kan zien
 highscoreFrame = tk.Frame()
 
+#frame waar het resultaat word weergegeven als je klaar bent
 resultFrame = tk.Frame()
 
 welkomLabel = tk.Label(gameFrame, text="Welkom bij LINGO", font=("Arial", 18, "bold"))
@@ -173,11 +179,12 @@ tijdLabel.pack()
 highscoresLabel = tk.Label(highscoreFrame, text="Top 20 highscores", font=("Arial", 14, "bold"))
 tijdLabel.pack()
 
-
+#clear om opnieuw te spelen
 clear = tk.Button(resultFrame, text="clear")
 clear.pack()
 clear.bind("<Button-1>", handle_clear)
 
+#sluit om de game af te sluiten
 sluit = tk.Button(resultFrame, text="Exit")
 sluit.pack()
 sluit.bind("<Button-1>", handle_sluit)
@@ -190,11 +197,11 @@ for veld in range(5):
     invoerVeld.bind("<Return>", validate)
 
 
-#maken van highscores tabel
+#haal de highscores op sorteer ze van laag naar hoog en pak de bovenste 10
 connection = sqlite3.connect('lingo.sqlite3')
 cursor = connection.execute("SELECT * FROM highscores ORDER BY score ASC LIMIT 0,10; ")
 
-#maken table head
+#table head voor highscores tabel
 IDen = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, "bold"))
 IDen.grid(row = 0, column = 0)
 IDen.insert("end", "ID")
@@ -207,9 +214,11 @@ scoreEn = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, "bold"
 scoreEn.grid(row=0, column=2)
 scoreEn.insert("end", "Score")
 
+#table body voor highscores tabel
 i=1
 for row in cursor: 
     for j in range(len(row)):
+        #vul voor elke rij alle data in in verschillende cellen
         e = tk.Entry(highscoreFrame, width=10, fg='blue', font=("Arial", 8, )) 
         e.grid(row=i, column=j) 
         e.insert("end", row[j])

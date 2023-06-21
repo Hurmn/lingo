@@ -48,8 +48,11 @@ class Lingo:
             return(out)
         
     def set_woord(self):
+        #open connectie
         connection = sqlite3.connect("lingo.sqlite3")
+        #selecteer alle vijfletterwoorden en randomize
         cursor = connection.execute("SELECT * FROM vijfletters ORDER BY RANDOM() ;")
+        #pak de bovenste
         for row in cursor:
             woord = row[0]
         connection.close()
